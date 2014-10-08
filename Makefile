@@ -1,8 +1,6 @@
 .SECONDARY:
 
 # Extract, simplify, and reproject shapefiles from compressed archives.
-#
-# * Extract shapefiles
 shp/%.shp:
 	rm -rf $(basename $@)
 	mkdir -p $(basename $@)
@@ -20,6 +18,34 @@ gz/metro/%.zip:
 	curl -L --remote-time 'http://library.oregonmetro.gov/rlisdiscovery/$(notdir $@)' -o $@.download
 	mv $@.download $@
 
+
+# The primary, unmodified building footprint dataset as distributed by Oregon
+# Metro.  This dataset contains over 655k building footprints for the Multnomah
+# County area which includes Portland, Beaverton, Gresham and many other neighboring
+# cities and suburbs.
+#
+# distributor - Oregon Metro
+# details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=2406
+# updated- July 24, 2014
+# license - ODbL v1.0
 shp/buildings.shp: gz/metro/buildings.zip
+
+
+# The master address file for Multnomah County.  The file includes every address
+# in Portland, Beaverton, Gresham and many other neighboring cities and suburbs.
+#
+# distributor - Oregon Metro
+# details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=656
+# updated- July 25, 2014
+# license - ODbL v1.0
 shp/addresses.shp: gz/metro/master_address.zip
+
+
+# The voter precincts for Multnomah County.  This data breaks Portland and the
+# surrounding areas into 783 smaller areas.
+#
+# distributor - Oregon Metro
+# details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=276
+# updated- April 25, 2014
+# license - ODbL v1.0
 shp/precincts.shp: gz/metro/precinct.zip
