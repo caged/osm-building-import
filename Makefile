@@ -27,7 +27,7 @@ make all: shp/buildings.shp shp/addresses.shp shp/precincts.shp
 #
 # See shp/buildings_raw.shp for more details
 shp/buildings.shp: shp/buildings_raw.shp
-	ogr2ogr $@ $< -sql "select BLDG_ID,BLDG_ADDR,BLDG_NAME,STATE_ID,NUM_STORY \
+	ogr2ogr -preserve_fid $@ $< -sql "select BLDG_ID,BLDG_ADDR,BLDG_NAME,STATE_ID,NUM_STORY \
 	,BLDG_USE,BLDG_TYPE from buildings_raw"
 
 # The primary, unmodified building footprint dataset as distributed by Oregon
