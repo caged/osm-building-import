@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -e
+
+usage() { echo "Usage: $0 [-d postgres database]" 1>&2; exit 1; }
+
+while getopts ":d:" opt; do
+  case $opt in
+    d)
+      dbname=$OPTARG
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${dbname}" ]]; then
+  usage
+fi
+
+red="\033[31m"
+nc="\033[m"
+
+echo "\n${red}Checking to make sure you've got everything you need...${nc}"
+script/dependencies-check
+
+echo "\n${red}Downloading and converting metro data...${nc}"
+make --quiet all
+
+# Drop and recreate database, but ask for confirmation first.
+echo "\n${red}Creating postgres database...${nc}"
+dropdb --if-exists --interactive -e $dbname
+createdb --encoding UTF8 $dbname
+
+# Create the POSTGIS extension
+psql -d $dbname -c 'create extension postgis'
+
+echo "\n${red}Importing shapefile data into postgres...${nc}"
+
+for file in $(find ./shp -name "*.shp"); do \
+  filename=$(basename $file)
+  tablename=${filename%.*}
+  echo $tablename
+  shp2pgsql \
+    -t 2D  \
+    -I \
+    -D \
+    -d \
+    -s 4326 \
+    -W "latin1" \
+    -g geom \
+    $file "${tablename}" | psql -d $dbname
+done
