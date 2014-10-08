@@ -39,8 +39,7 @@ createdb --encoding UTF8 $dbname
 psql -d $dbname -c 'create extension postgis'
 
 echo "\n${red}Importing shapefile data into postgres...${nc}"
-
-for file in $(find ./shp -name "*.shp"); do \
+for file in shp/buildings.shp shp/addresses.shp shp/precincts.shp; do \
   filename=$(basename $file)
   tablename=${filename%.*}
   shp2pgsql -t 2D  -I -D -d -s 4326 -W "latin1" -g geom $file $tablename | psql -d $dbname
