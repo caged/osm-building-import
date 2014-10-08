@@ -35,8 +35,8 @@ echo "\n${red}Creating postgres database...${nc}"
 dropdb --if-exists --interactive -e $dbname
 createdb --encoding UTF8 $dbname
 
-# Create the POSTGIS extension
-psql -d $dbname -c 'create extension postgis'
+# Create the POSTGIS and HSTORE extensions
+psql -d $dbname -c 'create extension postgis; create extension hstore'
 
 echo "\n${red}Importing shapefile data into postgres...${nc}"
 for file in shp/buildings.shp shp/addresses.shp shp/precincts.shp; do \
