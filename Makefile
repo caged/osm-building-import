@@ -22,3 +22,4 @@ gz/metro/%.zip:
 
 shp/buildings.shp: gz/metro/buildings.zip
 shp/addresses.shp: gz/metro/master_address.zip
+shp/precincts.shp: gz/metro/precinct.zip
