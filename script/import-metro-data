@@ -24,9 +24,11 @@ fi
 red="\033[31m"
 nc="\033[m"
 
+# Check to ensure we have all the proper dependencies
 echo "\n${red}Checking to make sure you've got everything you need...${nc}"
 script/dependencies-check
 
+# Download all the require data we need to process everything
 echo "\n${red}Downloading and converting metro data...${nc}"
 make --quiet all
 
@@ -38,6 +40,7 @@ createdb --encoding UTF8 $dbname
 # Create the POSTGIS and HSTORE extensions
 psql -d $dbname -c 'create extension postgis; create extension hstore'
 
+# Import shapefiles to our newly created database
 echo "\n${red}Importing shapefile data into postgres...${nc}"
 for file in shp/buildings.shp shp/addresses.shp shp/precincts.shp; do \
   filename=$(basename $file)
