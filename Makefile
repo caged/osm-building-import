@@ -19,6 +19,7 @@ gz/metro/%.zip:
 	mv $@.download $@
 
 
+# Create shapefiles for buildings, addresses and precincts.
 make all: shp/buildings.shp shp/addresses.shp shp/precincts.shp
 
 # A simplified version of buildings_raw.shp that only includes properties we'll
@@ -41,7 +42,7 @@ shp/buildings.shp: shp/buildings_raw.shp
 # license - ODbL v1.0
 shp/buildings_raw.shp: gz/metro/buildings.zip
 
-# The master address file for Multnomah County.	The file includes every address
+# The master address file for Multnomah County. The file includes every address
 # in Portland, Beaverton, Gresham and many other neighboring cities and suburbs.
 #
 # distributor - Oregon Metro
