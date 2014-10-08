@@ -59,3 +59,14 @@ shp/addresses.shp: gz/metro/master_address.zip
 # updated- April 25, 2014
 # license - ODbL v1.0
 shp/precincts.shp: gz/metro/precinct.zip
+
+osm/features.json:
+	rm -rf $(basename $@)
+	mkdir -p $(basename $@)
+
+	curl --get 'http://overpass-api.de/api/interpreter' \
+		--data-urlencode 'data=[out:json];(way["building"](45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623);node(45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623);relation(45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623););out meta;>;' \
+		-o $@.download
+
+	mv $@.download $@
+	rm -rf $(basename $@)
