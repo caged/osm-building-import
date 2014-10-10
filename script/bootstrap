@@ -2,12 +2,15 @@
 
 set -e
 
-usage() { echo "Usage: $0 [-d postgres database]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-d postgres database] [-p postgres port]" 1>&2; exit 1; }
 
-while getopts ":d:" opt; do
+while getopts ":d:p" opt; do
   case $opt in
     d)
       dbname=$OPTARG
+      ;;
+    p)
+      port=$OPTARG
       ;;
     *)
       usage
