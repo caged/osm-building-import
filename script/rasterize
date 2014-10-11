@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+
+
+var fs = require("fs"),
+    d3 = require("d3"),
+    Canvas = require("canvas"),
+    pg       = require('pg'),
+    argv = require('minimist')(process.argv.slice(2))
+
+if(!argv.o || !argv.d || !argv.q || !argv.t) {
+  console.log("Please supply at least the following options\n-o file.png" +
+  "\n-d database\n-q query\n-t table for bounding box");
+  return
+}
+
+out       = argv.o
+database  = argv.d
+query     = argv.q
+table     = argv.t
+
+var file = fs.createWriteStream(out),
+    width = 3000
+    height = 1500
+
+var canvas = new Canvas(width, height),
+    context = canvas.getContext('2d');
+
+context.fillStyle = '#111'
+context.fillRect(0, 0, width, height)
+
+context.fillStyle = '#d024a8'
+context.strokeStyle = 'red'
+context.lineWidth = 0.5
+context.lineJoin = 'round'
+context.antialias = 'subpixel'
+
+var projection = d3.geo.albers().rotate([120])
+  .scale(1)
+  .translate([ 0, 0 ])
+
+var path = d3.geo.path()
+    .projection(projection)
+    .context(context)
+    .pointRadius(1)
+
+var fail = function(client, err) {
+  console.log(err)
+  client.end()
+}
+
+var toFeature = function(geom) {
+  return {
+    type: 'Feature',
+    properties: {},
+    geometry: geom
+  }
+}
+
+pg.connect("postgres://@localhost/" + database, function(err, client, done) {
+  if(err) return fail(client, err)
+
+  var bboxq = "select st_asgeojson(st_envelope(st_extent(geom))) as extent from " + table
+
+  client.query(bboxq, function(err, result) {
+    if(err) return fail(client, err)
+
+    var bbox = JSON.parse(result.rows[0].extent)
+    projection.scale(1).translate([0, 0])
+    var b = path.bounds(toFeature(bbox))
+    var s = .99 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height)
+    var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2]
+    projection.scale(s).translate(t)
+
+
+     client.query(query, function(err, results) {
+       results.rows.forEach(function(feature) {
+         context.beginPath()
+         feature = toFeature(JSON.parse(feature.feature))
+         path(feature)
+         if (feature.geometry.type && /Point$/.test(feature.geometry.type)) context.stroke();
+         else context.fill();
+       })
+
+       client.end()
+       canvas.pngStream().pipe(file)
+     })
+
+
+  })
+
+})

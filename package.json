@@ -1,0 +1,23 @@
+{
+  "name": "gis-rasterize",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Rasterize GIS data from postgres",
+  "keywords": [
+    "portland",
+    "pdx",
+    "topojson",
+    "geojson",
+    "shapefile"
+  ],
+  "author": {
+    "name": "Justin Palmer",
+    "url": "http://labratrevenge.com"
+  },
+  "dependencies": {
+    "canvas": "1.1.6",
+    "d3": "3.4.12",
+    "pg": "3.5.0",
+    "minimist": "1.1.0"
+  }
+}
