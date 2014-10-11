@@ -4,7 +4,7 @@ set -e
 
 usage() { echo "Usage: $0 [-d postgres database] [-p postgres port]" 1>&2; exit 1; }
 
-while getopts ":d:p" opt; do
+while getopts ":d:p:" opt; do
   case $opt in
     d)
       dbname=$OPTARG
@@ -50,3 +50,7 @@ for file in shp/buildings.shp shp/addresses.shp shp/precincts.shp; do \
   tablename=${filename%.*}
   shp2pgsql -t 2D  -I -D -d -s 4326 -W "latin1" -g geom $file $tablename | psql -d $dbname
 done
+
+# Import existing OSM data
+echo "\n${red}Importing existing OSM data into postgres...${nc}"
+osm2pgsql -S config/osm-default.style --database $dbname --port $port osm/features.osm.bz2
