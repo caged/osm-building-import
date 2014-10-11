@@ -20,7 +20,7 @@ done
 
 shift $((OPTIND-1))
 
-if [ -z "${dbname}" ]]; then
+if [ -z "${dbname}" ]; then
   usage
 fi
 
