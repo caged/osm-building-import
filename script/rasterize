@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 
+// Generate a png image from a query
+//
+// - q: Query to run
+// - d: Name of database
+// - o: Name of png file to write
+//
+// Examples:
+//  script/rasterize -q 'select st_asgeojson(geom) as feature from buildings \
+//    where st_isvalid(geom) order by gid desc limit 100000' -d pdx_osm \
+//    -o out.png
 
 var fs = require("fs"),
     d3 = require("d3"),
@@ -13,14 +23,13 @@ if(!argv.o || !argv.d || !argv.q || !argv.t) {
   return
 }
 
-out       = argv.o
-database  = argv.d
-query     = argv.q
-table     = argv.t
+var out       = argv.o,
+    database  = argv.d,
+    query     = argv.q
 
 var file = fs.createWriteStream(out),
-    width = 3000
-    height = 1500
+    width = 1000
+    height = 1000
 
 var canvas = new Canvas(width, height),
     context = canvas.getContext('2d');
@@ -43,11 +52,20 @@ var path = d3.geo.path()
     .context(context)
     .pointRadius(1)
 
+// Called when postgres commands fails.  Prints the error message and
+// causes the client to exit
+//
+// Returns nothing
 var fail = function(client, err) {
   console.log(err)
   client.end()
 }
 
+// Generate a proper GeoJSON feature from a geometry
+//
+// geom - Polygon, Point, or any other valid GeoJSON geometry
+//
+// Returns an Object
 var toFeature = function(geom) {
   return {
     type: 'Feature',
@@ -56,10 +74,13 @@ var toFeature = function(geom) {
   }
 }
 
+
 pg.connect("postgres://@localhost/" + database, function(err, client, done) {
   if(err) return fail(client, err)
 
-  var bboxq = "select st_asgeojson(st_envelope(st_extent(geom))) as extent from " + table
+  // Use the given query as a subquery for the bbox so the image is cropped tight
+  // to the features returned by the query
+  var bboxq = "with features as (" + query + ") select st_asgeojson(st_extent(st_geomfromgeojson(feature))) as extent from features"
 
   client.query(bboxq, function(err, result) {
     if(err) return fail(client, err)
@@ -70,7 +91,6 @@ pg.connect("postgres://@localhost/" + database, function(err, client, done) {
     var s = .99 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height)
     var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2]
     projection.scale(s).translate(t)
-
 
      client.query(query, function(err, results) {
        results.rows.forEach(function(feature) {
@@ -84,8 +104,5 @@ pg.connect("postgres://@localhost/" + database, function(err, client, done) {
        client.end()
        canvas.pngStream().pipe(file)
      })
-
-
   })
-
 })
