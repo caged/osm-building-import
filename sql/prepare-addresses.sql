@@ -85,3 +85,21 @@ update addresses_intermediate
 -- include the house number because OSM requires that it's set seperately
 update addresses_intermediate
   set fulladd = array_to_string(array[fdpre,fname,ftype,fdsuf], ' ');
+
+-- Create the final address table with all of our mutations complete.
+-- We only want a few relevant properties from the intermediate table
+create table addresses_final as
+  select distinct on (tlid, housenumber, street, postcode)
+    tlid,
+    house as housenumber,
+    fulladd as street,
+    zip as postcode,
+    initcap(mail_city) as city,
+    'OR'::varchar(2) as state,
+    'US'::varchar(2) as country,
+    geom
+  from addresses_intermediate;
+
+-- Create some relevant indexes
+create index on addresses_final (tlid);
+create index on addresses_final using gist(geom);
