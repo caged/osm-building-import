@@ -19,8 +19,9 @@ gz/metro/%.zip:
 	mv $@.download $@
 
 
-# Create shapefiles for buildings, addresses and precincts.
-make all: shp/buildings.shp shp/addresses.shp shp/precincts.shp
+# Create shapefiles for buildings, addresses and precincts and download existing
+# OSM data.
+make all: shp/buildings.shp shp/addresses.shp shp/precincts.shp osm/features.osm.bz2
 
 # A simplified version of buildings_raw.shp that only includes properties we'll
 # be working with later.  The goal here is to not alter table names or transform
