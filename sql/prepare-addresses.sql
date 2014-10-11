@@ -89,8 +89,8 @@ update addresses_intermediate
 -- Create the final address table with all of our mutations complete.
 -- We only want a few relevant properties from the intermediate table
 create table addresses_final as
-  select distinct on (tlid, housenumber, street, postcode)
-    tlid,
+  select distinct
+    tlid as state_id,
     house as housenumber,
     fulladd as street,
     zip as postcode,
@@ -100,6 +100,11 @@ create table addresses_final as
     geom
   from addresses_intermediate;
 
+-- Add a serial id
+alter table addresses_final
+  add column id serial;
+
 -- Create some relevant indexes
-create index on addresses_final (tlid);
+create index on addresses_final (state_id);
+create index on addresses_final (id);
 create index on addresses_final using gist(geom);
