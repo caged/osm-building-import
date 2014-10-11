@@ -1,6 +1,6 @@
 ### Portland, Oregon OpenStreetMap Building Import
 
-![](https://raw.githubusercontent.com/rosecitygis/osm-building-import/rasterizer/coverage.png)
+![coverage](https://cloud.githubusercontent.com/assets/25/4600812/150fcace-50de-11e4-9703-2f3c0f0926c5.png)
 
 ### Getting started
 
