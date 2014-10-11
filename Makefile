@@ -61,12 +61,23 @@ shp/addresses.shp: gz/metro/master_address.zip
 # license - ODbL v1.0
 shp/precincts.shp: gz/metro/precinct.zip
 
+# The general bounding box representing Multnomah county.  We'll use this to
+# fetch existing OSM geography
+OSM_BBOX=45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623
+
+# Download existing OSM geometry data in the relevant OSM_BBOX bounding box from the
+# offiical Overpass API.
+#
+# distributer - OSM and Contributors
+# details - http://wiki.openstreetmap.org/wiki/Overpass_API
+# updated - N/A
+# license - ODbl http://opendatacommons.org/licenses/odbl/
 osm/features.osm.bz2:
 	rm -rf $(basename $@)
 	mkdir -p $(basename $@)
 
 	curl --get 'http://overpass-api.de/api/interpreter' \
-		--data-urlencode 'data=[out:xml];(way["building"](45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623);node(45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623);relation(45.2012894970606,-123.19651445735,45.7254175022529,-121.926452653623););out meta;>;' \
+		--data-urlencode 'data=[out:xml];(way["building"]($(OSM_BBOX));node($(OSM_BBOX));relation($(OSM_BBOX)););out meta;>;' \
 		| bzip2 -c > $@.download
 
 	mv $@.download $@
