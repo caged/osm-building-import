@@ -2,16 +2,16 @@
 -- This is largely based off of http://git.io/qM401g
 drop table if exists addresses_final;
 
--- Create a new final table from our exiting addresses table so we can
+-- Create a new intermediate table from our exiting addresses table so we can
 -- alter the columns and values without mutating our "clean" data.
-create table addresses_final as
+create temporary table addresses_intermediate as
   select * from addresses;
 
 -- We're expanding two character abbreviations to full words so we
 -- need some extra characters
-alter table addresses_final alter column fdpre type varchar(10);
-alter table addresses_final alter column fdsuf type varchar(10);
-alter table addresses_final alter column ftype type varchar(10);
+alter table addresses_intermediate alter column fdpre type varchar(10);
+alter table addresses_intermediate alter column fdsuf type varchar(10);
+alter table addresses_intermediate alter column ftype type varchar(10);
 
 -- Expand abbreviations in addresses to full words.
 -- Also normalize names from NAME to Name where only the initial
@@ -19,7 +19,7 @@ alter table addresses_final alter column ftype type varchar(10);
 --
 -- Example:
 --    29751 SW TOWN CENTER LOOP W becomes Southwest Town Center Loop West
-update addresses_final
+update addresses_intermediate
   set fdpre =
   case fdpre
     when 'N' then 'North'
@@ -83,5 +83,5 @@ update addresses_final
 
 -- Update the full address to use the modifications we made above.  We don't
 -- include the house number because OSM requires that it's set seperately
-update addresses_final
-  set fulladd = array_to_string(array[fdpre,fname,ftype,fdsuf], ' ')
+update addresses_intermediate
+  set fulladd = array_to_string(array[fdpre,fname,ftype,fdsuf], ' ');
