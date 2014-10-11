@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e
+
+usage() { echo "Usage: $0 [-d postgres database]" 1>&2; exit 1; }
+
+while getopts ":d:p:" opt; do
+  case $opt in
+    d)
+      dbname=$OPTARG
+      ;;
+    p)
+      port=$OPTARG
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${dbname}" ]; then
+  usage
+fi
+
+red="\033[31m"
+nc="\033[m"
+
+echo "\n${red}Converting addresses to OSM-friendly format...${nc}"
+psql -d $dbname -f sql/finalize-addresses.sql
