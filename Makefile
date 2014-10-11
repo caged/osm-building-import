@@ -40,7 +40,7 @@ shp/buildings.shp: shp/buildings_raw.shp
 # distributor - Oregon Metro
 # details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=2406
 # updated- July 24, 2014
-# license - ODbL v1.0
+# license - ODbL v1.0 http://opendatacommons.org/licenses/odbl/
 shp/buildings_raw.shp: gz/metro/buildings.zip
 
 # The master address file for Multnomah County. The file includes every address
@@ -49,7 +49,7 @@ shp/buildings_raw.shp: gz/metro/buildings.zip
 # distributor - Oregon Metro
 # details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=656
 # updated- July 25, 2014
-# license - ODbL v1.0
+# license - ODbL v1.0 http://opendatacommons.org/licenses/odbl/
 shp/addresses.shp: gz/metro/master_address.zip
 
 
@@ -59,7 +59,7 @@ shp/addresses.shp: gz/metro/master_address.zip
 # distributor - Oregon Metro
 # details - http://rlisdiscovery.oregonmetro.gov/?action=viewDetail&layerID=276
 # updated- April 25, 2014
-# license - ODbL v1.0
+# license - ODbL v1.0 http://opendatacommons.org/licenses/odbl/
 shp/precincts.shp: gz/metro/precinct.zip
 
 # The general bounding box representing Multnomah county.  We'll use this to
