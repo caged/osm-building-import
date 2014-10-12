@@ -30,7 +30,7 @@ make all: shp/buildings.shp shp/addresses.shp shp/precincts.shp osm/features.osm
 # See shp/buildings_raw.shp for more details
 shp/buildings.shp: shp/buildings_raw.shp
 	ogr2ogr -preserve_fid $@ $< -sql "select BLDG_ID,BLDG_ADDR,BLDG_NAME,STATE_ID,NUM_STORY \
-	,BLDG_USE,BLDG_TYPE from buildings_raw"
+	,BLDG_USE,BLDG_TYPE,BLDG_NUMB,BPS_BLDGID from buildings_raw"
 
 # The primary, unmodified building footprint dataset as distributed by Oregon
 # Metro.	This dataset contains over 655k building footprints for the Multnomah
