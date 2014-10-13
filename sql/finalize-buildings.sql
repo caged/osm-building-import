@@ -1,4 +1,3 @@
-drop table if exists buildings_intermediate;
 drop table if exists buildings_final;
 
 create temporary table buildings_intermediate as
