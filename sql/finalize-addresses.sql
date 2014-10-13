@@ -1,5 +1,5 @@
 -- Update addresses to adhere to OSM's style.
--- This is largely based off of http://git.io/qM401g
+-- This is largely based on http://git.io/qM401g
 drop table if exists addresses_final;
 
 -- Create a new intermediate table from our exiting addresses table so we can
@@ -90,7 +90,7 @@ update addresses_intermediate
 -- We only want a few relevant properties from the intermediate table
 create table addresses_final as
   select distinct
-    tlid as state_id,
+    regexp_replace(trim(tlid), '\s{2,}', ' ', 'g') as state_id,
     house as housenumber,
     fulladd as street,
     zip as postcode,
