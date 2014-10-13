@@ -33,5 +33,4 @@ create table buildings_final as
   where a.state_id is not null;
 
 -- Create some relevant indexes
-create index on buildings_final (state_id);
 create index on buildings_final using gist(geom);
