@@ -12,6 +12,7 @@ create temporary table addresses_intermediate as
 alter table addresses_intermediate alter column fdpre type varchar(10);
 alter table addresses_intermediate alter column fdsuf type varchar(10);
 alter table addresses_intermediate alter column ftype type varchar(10);
+alter table addresses_intermediate alter column tlid type varchar(20);
 
 -- Expand abbreviations in addresses to full words.
 -- Also normalize names from NAME to Name where only the initial
@@ -90,7 +91,7 @@ update addresses_intermediate
 -- We only want a few relevant properties from the intermediate table
 create table addresses_final as
   select distinct
-    regexp_replace(trim(tlid), '\s{2,}', ' ', 'g') as state_id,
+    normalize_state_id(tlid) as state_id,
     house as housenumber,
     fulladd as street,
     zip as postcode,
