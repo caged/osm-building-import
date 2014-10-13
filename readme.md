@@ -16,16 +16,16 @@
 ```
 
 ### Development Guidelines
-* Have fun!
-* Never leave the bootstrap process broken or partially functioning.  Anyone who
+* **Have fun!**  
+* **Never leave the bootstrap process broken or partially functioning.**  Anyone who
   wishes to contribute should be able to run one or two commands to get a fully
   functioning version of the source and relevant data.  
-* Document *everything*.  Think about the individuals who will read your
+* **Document *everything*.**  Think about the individuals who will read your
   code six months from now.
-* Keep raw source data as close to the original source as possible. All tables
+* **Consider raw source data immutable.** All tables
   created in the bootstrap process should be considered immutable so we always have
   a clean data set to work from without having to rebootstrap.  
-* Never rename properties or change values during the import/download process.  There are two
+* **Never rename properties or change values during the import/download process.**  There are two
   exceptions.  You should transform all geometry data to EPSG:4326, and you can
   filter which properties are retained.  However, you should never exclude
   records from raw data during the import/download process.
