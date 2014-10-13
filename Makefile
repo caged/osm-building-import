@@ -7,7 +7,7 @@ shp/%.shp:
 	tar --exclude="._*" -xzm -C $(basename $@) -f $<
 
 	for file in `find $(basename $@) -name '*.shp'`; do \
-		ogr2ogr -simplify 0.2 -dim 2 -t_srs EPSG:4326 $(basename $@).$${file##*.} $$file; \
+		ogr2ogr -dim 2 -t_srs EPSG:4326 $(basename $@).$${file##*.} $$file; \
 		chmod 644 $(basename $@).$${file##*.}; \
 	done
 	rm -rf $(basename $@)
