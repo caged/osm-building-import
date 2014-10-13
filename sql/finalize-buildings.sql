@@ -10,6 +10,8 @@ create temporary table buildings_intermediate as
          max(normalize_state_id(state_id)) as state_id,
          max(bldg_use) as bldg_use,
          max(bldg_type) as bldg_type,
+         round(max(max_height) * 0.3048, 2) as height,
+         round(max(surf_elev) * 0.3048, 2) as ele,
          st_union(geom) as geom
   from buildings
   where bldg_addr != ''
@@ -25,6 +27,8 @@ create table buildings_final as
          a.state,
          a.country,
          b.gid,
+         b.height,
+         b.ele,
          b.bldg_type,
          b.bldg_use,
          b.geom
