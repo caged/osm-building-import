@@ -31,3 +31,7 @@ create table buildings_final as
   from buildings_intermediate b
   left outer join (select distinct on (state_id) * from addresses_final) a on a.state_id = b.state_id
   where a.state_id is not null;
+
+-- Create some relevant indexes
+create index on buildings_final (state_id);
+create index on buildings_final using gist(geom);
