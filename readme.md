@@ -5,7 +5,14 @@
 ### Getting started
 
 ```
+# Pulls down portland building footprints, addresses, election precincts; existing
+# OSM building data
 ./script/bootstrap
+
+# Runs all the required alterations that prepares all addresses and buildings
+# for OSM import.  
+./script/finalize
+
 ```
 
 ### Development Guidelines
