@@ -1,5 +1,9 @@
+-- Always start fresh
 drop table if exists buildings_final;
 
+-- Create a temporary table for buildings.  We want to group all buildings with the
+-- same bldg_id and union their geometries since some buildings contain over 90
+-- polygons.  For more details, check out https://github.com/rosecitygis/osm-building-import/issues/1
 create temporary table buildings_intermediate as
   select max(gid) as gid,
          max(bldg_addr) as addr,
@@ -11,6 +15,9 @@ create temporary table buildings_intermediate as
   where bldg_addr != ''
   group by bldg_id;
 
+-- Join buildings with addresses.  We are only choosing a single address for
+-- buildings at the moment which is why you see the distinct addresses query in
+-- the join.
 create table buildings_final as
   select a.housenumber,
          a.street,
