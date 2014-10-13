@@ -5,6 +5,8 @@
 ### Getting started
 
 ```
+# Pulls down portland building footprints, addresses, election precincts; existing
+# OSM building data
 ./script/bootstrap
 ```
 
