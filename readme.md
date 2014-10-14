@@ -4,14 +4,14 @@
 
 ### Getting started
 
-```
-# Pulls down portland building footprints, addresses, election precincts; existing
-# OSM building data
-./script/bootstrap
+``` bash
+# Pulls down portland building footprints, addresses, election precincts and existing
+# OSM building data and imports the data into the pdx_osm database
+./script/bootstrap -d pdx_osm
 
 # Runs all the required alterations that prepares all addresses and buildings
 # for OSM import.  
-./script/finalize
+./script/finalize -d pdx_osm
 
 ```
 
