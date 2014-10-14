@@ -25,7 +25,7 @@
 * **Consider raw source data immutable.** All tables
   created in the bootstrap process should be considered immutable so we always have
   a clean data set to work from without having to rebootstrap.  
-* **Never rename properties or change values during the import/download process.**  There are two
+* **Never rename properties or change values during a bootstrap operation.**  There are two
   exceptions.  You should transform all geometry data to EPSG:4326, and you can
   filter which properties are retained.  However, you should never exclude
   records from raw data during the import/download process.
