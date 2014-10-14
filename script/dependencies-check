@@ -4,6 +4,7 @@ all_good=true
 command -v ogr2ogr >/dev/null 2>&1 || { echo >&2 "ogr2ogr not installed. 'brew install gdal' or download OSX binaries: http://www.kyngchaos.com/software:frameworks#gdal_complete"; all_good=false; }
 command -v psql >/dev/null 2>&1 || { echo >&2 "Postgres not installed. 'brew install postgres && brew install postgis' or download http://postgresapp.com"; all_good=false; }
 command -v shp2pgsql >/dev/null 2>&1 || { echo >&2 "shp2psql missing.  Maybe you don't have PostGIS installed?"; all_good=false; }
+command -v osmosis >/dev/null 2>&1 || { echo >&2 "osmosis missing.  'brew install osmosis' or download http://wiki.openstreetmap.org/wiki/Osmosis#Downloading"; all_good=false; }
 
 if $all_good ; then
   echo 'Everything looks good!'
