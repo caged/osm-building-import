@@ -30,7 +30,20 @@ create table buildings_final as
          b.height,
          b.ele,
          b.bldg_type,
-         b.bldg_use,
+         case lower(b.bldg_use)
+          when 'commercial general'         then 'commercial'
+          when 'commercial grocery'         then 'retail'
+          when 'commercial hotel'           then 'hotel'
+          when 'commercial office'          then 'office'
+          when 'commercial restaurant'      then 'commercial'
+          when 'commercial retail'          then 'retail'
+          when 'industrial'                 then 'industrial'
+          when 'institutional religious'    then 'church'
+          when 'multi family residential'   then 'apartments'
+          when 'parking'                    then 'garage'
+          when 'single family residential'  then 'residential'
+          else 'yes'
+         end as building,
          b.geom
   from buildings_intermediate b
   left outer join (select distinct on (state_id) * from addresses_final) a on a.state_id = b.state_id
