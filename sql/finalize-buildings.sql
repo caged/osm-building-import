@@ -50,4 +50,17 @@ create table buildings_final as
   where a.state_id is not null;
 
 -- Create some relevant indexes
+create index on buildings_final (lower(building));
 create index on buildings_final using gist(geom);
+
+-- Further define the 'building' attribute using `bldg_type`
+update buildings_final set
+  building =
+  case lower(bldg_type)
+    when 'church' then 'church'
+    when 'dormitories' then 'dormitory'
+    when 'house'  then 'house'
+    when 'garage' then 'garage'
+    when 'res'    then 'residential'
+    else building
+  end
