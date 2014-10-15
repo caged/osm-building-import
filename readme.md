@@ -34,3 +34,12 @@
   name and type in the resulting file, but you shouldn't remove records with type=school
   and you shouldn't alter the data to change things like St. to Street. These transformations
   will take place later on.
+
+### Thanks
+
+Without the fantastic work of the projects that come before this and the effort of
+those involved, this project would not exist.  They were a great source of inspiration
+and invaluable resources.
+
+* [Importing 1 Million New York City buildings and addresses](http://www.openstreetmap.org/user/lxbarth/diary/23588)
+* [pdxosgeo/pdxbldgimport](https://github.com/pdxosgeo/pdxbldgimport)
