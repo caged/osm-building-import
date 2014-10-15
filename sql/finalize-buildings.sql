@@ -5,11 +5,12 @@ drop table if exists buildings_final;
 -- same bldg_id and union their geometries since some buildings contain over 90
 -- polygons.  For more details, check out https://github.com/rosecitygis/osm-building-import/issues/1
 create temporary table buildings_intermediate as
-  select max(gid) as gid,
+  select min(bldg_id) as bldg_id,
          max(bldg_addr) as addr,
          max(normalize_state_id(state_id)) as state_id,
          max(bldg_use) as bldg_use,
          max(bldg_type) as bldg_type,
+         max(num_story) as levels,
          round(max(max_height) * 0.3048, 2) as height,
          round(max(surf_elev) * 0.3048, 2) as ele,
          st_union(geom) as geom
@@ -24,11 +25,13 @@ create table buildings_final as
   select a.housenumber,
          a.street,
          a.postcode,
+         a.city,
          a.state,
          a.country,
-         b.gid,
+         b.bldg_id,
          b.height,
          b.ele,
+         b.levels,
          b.bldg_type,
          case lower(b.bldg_use)
           when 'commercial general'         then 'commercial'
