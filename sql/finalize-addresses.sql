@@ -21,30 +21,9 @@ alter table addresses_intermediate alter column tlid type varchar(20);
 -- Example:
 --    29751 SW TOWN CENTER LOOP W becomes Southwest Town Center Loop West
 update addresses_intermediate
-  set fdpre =
-  case fdpre
-    when 'N' then 'North'
-    when 'S' then 'South'
-    when 'E' then 'East'
-    when 'W' then 'West'
-    when 'NE' then 'Northeast'
-    when 'SE' then 'Southeast'
-    when 'NW' then 'Northwest'
-    when 'SW' then 'Southwest'
-  end,
-  fdsuf =
-  case fdsuf
-    when 'N' then 'North'
-    when 'S' then 'South'
-    when 'E' then 'East'
-    when 'W' then 'West'
-    when 'NE' then 'Northeast'
-    when 'SE' then 'Southeast'
-    when 'NW' then 'Northwest'
-    when 'SW' then 'Southwest'
-    when 'NB' then 'Northbound'
-    when 'SB' then 'Southbound'
-  end,
+  set
+  fdpre = expand_cardinal_dir(fdpre),
+  fdsuf = expand_cardinal_dir(fdsuf),
   ftype =
   case ftype
     when 'ALY' then 'Alley'

@@ -29,6 +29,7 @@ nc="\033[m"
 
 echo "\n${red}Loading custom postgres helper functions...${nc}"
 psql -d $dbname -f sql/_normalize_state_id.sql
+psql -d $dbname -f sql/_expandcardinal_dir_.sql
 
 echo "\n${red}Converting addresses to OSM-friendly format...${nc}"
 psql -d $dbname -f sql/finalize-addresses.sql
