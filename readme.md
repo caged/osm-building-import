@@ -7,15 +7,15 @@
 ``` bash
 # Pulls down portland building footprints, addresses, election precincts and existing
 # OSM building data and imports the data into the pdx_osm database
-./script/bootstrap -d pdx_osm
+script/bootstrap -d pdx_osm
 
 # Runs all the required alterations that prepares all addresses and buildings
 # for OSM import.  
-./script/finalize -d pdx_osm
+script/finalize -d pdx_osm
 
 # Exports buildings in all precincts or the supplied precinct to an OSM file reacy
 # for validation in JOSM
-./script/export -d pdx_osm [-p PRECINCT_NUMBER]
+script/export -d pdx_osm [-p PRECINCT_NUMBER]
 
 ```
 
