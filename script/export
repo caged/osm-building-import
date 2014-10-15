@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -e
+
+usage() { echo "Usage: $0 [-d postgres database]" 1>&2; exit 1; }
+
+while getopts ":d:p:" opt; do
+  case $opt in
+    d)
+      dbname=$OPTARG
+      ;;
+    p)
+      precinct=$OPTARG
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${dbname}" ]; then
+  usage
+fi
+
+red="\033[31m"
+nc="\033[m"
+
+
+if [[ -e shp/$precinct.shp ]]; then
+  rm shp/$precinct.*
+fi
+
+if [[ -e osm/$precinct.osm ]]; then
+  rm osm/$precinct.*
+fi
+
+pgsql2shp -p 15432 -f shp/$precinct.shp $dbname  "select buildings_final.* \
+  from precincts \
+  inner join buildings_final on st_intersects(precincts.geom, buildings_final.geom) \
+  where precinct = $precinct"
+
+python lib/ogr2osm.py shp/$precinct.shp -t lib/translate-attributes.py -o osm/$precinct.osm
+
+rm shp/$precinct.*
