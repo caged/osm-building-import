@@ -13,6 +13,10 @@
 # for OSM import.  
 ./script/finalize -d pdx_osm
 
+# Exports buildings in all precincts or the supplied precinct to an OSM file reacy
+# for validation in JOSM
+./script/export -d pdx_osm [-p PRECINCT_NUMBER]
+
 ```
 
 ### Development Guidelines
