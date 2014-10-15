@@ -1,0 +1,76 @@
+#!/bin/sh
+
+# Export the buildings in a precinct to osm/$PRECINCT.osm
+#
+# Usage
+#   export -d pdx_osm -p 4302
+#   export -d pdx_osm
+
+# pgsql2shp returns a a non-zero status for empty queries so this is commented
+# out for now.
+#set -e
+
+usage() { echo "Usage: $0 [-d postgres database] [-p precinct]" 1>&2; exit 1; }
+
+while getopts ":d:p:" opt; do
+  case $opt in
+    d)
+      dbname=$OPTARG
+      ;;
+    p)
+      precinct=$OPTARG
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${dbname}" ]; then
+  usage
+fi
+
+red="\033[31m"
+nc="\033[m"
+
+
+if [[ -e shp/$precinct.shp ]]; then
+  rm shp/$precinct.*
+fi
+
+if [[ -e osm/$precinct.osm ]]; then
+  rm osm/$precinct.*
+fi
+
+# A specific precint wasn't given, so run through every precinct, splitting building
+# data into seperate files.
+if [ -z "${precinct}" ]; then
+  precincts=`psql -d $dbname -t -c "SELECT distinct(precinct::int) FROM precincts order by 1"`
+  for pid in $precincts; do
+    echo "\n${red}Exporting precinct $pid${nc}..."
+
+    pgsql2shp -p 15432 -f shp/$pid.shp $dbname \
+      "select buildings_final.* \
+        from precincts \
+        inner join buildings_final on st_intersects(precincts.geom, buildings_final.geom) \
+        where precinct = $pid"
+
+    python lib/ogr2osm.py -f shp/$pid.shp -t lib/translate-attributes.py -o osm/$pid.osm
+
+    rm shp/$pid.*
+  done
+# Export a single precinct supplied with the -p flag
+else
+  echo "\n${red}Exporting precinct $precinct ${nc}..."
+  pgsql2shp -p 15432 -f shp/$precinct.shp $dbname \
+    "select buildings_final.* \
+      from precincts \
+      inner join buildings_final on st_intersects(precincts.geom, buildings_final.geom) \
+      where precinct = $precinct"
+
+  python lib/ogr2osm.py -f shp/$precinct.shp -t lib/translate-attributes.py -o osm/$precinct.osm
+
+  rm shp/$precinct.*
+fi

@@ -2,3 +2,4 @@ gz
 shp
 osm
 notes.md
+*.pyc
